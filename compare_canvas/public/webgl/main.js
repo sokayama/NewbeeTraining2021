@@ -11,7 +11,7 @@ const main = async()=>{
     const vert = await res_vert.text();
 
     const loader = new THREE.TextureLoader();
-    const texture = await loader.load("/webgl/hamburger.jpg");
+    const texture = await loader.load("./hamburger.jpg");
 
     const body = document.getElementsByTagName("body")[0];
 
