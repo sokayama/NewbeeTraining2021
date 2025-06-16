@@ -38,16 +38,56 @@ export class ThreeWrapper{
         });
     }
 
-    createShaderMaterial(frag, vert){
-        // console.log(this.vert)
-        // console.log(this.frag)
+    async createBasePassMaterial(colorVec3){
+        const res_frag = await fetch("./js/shading.frag");
+        const frag = await res_frag.text();
+    
+        const res_vert = await fetch("./js/shading.vert");
+        const vert = await res_vert.text();
+    
         return new THREE.ShaderMaterial({
             uniforms:{
-                color: {value: new THREE.Vector4(this._rand(0,1),this._rand(0,1),this._rand(0,1), 1.0)},
-                lightDirection: {value: new THREE.Vector3(-0.5, 0.5, 0.5)}
+                color: {value: new THREE.Vector4(colorVec3.x, colorVec3.y, colorVec3.z, 1.0) },
+                lightDirection: {value: new THREE.Vector3(-0.5, 0.5, 0.5)},
+                ambientLight: { value: new THREE.Vector3(0.1, 0.1, 0.1) },
+                shininess:     { value: 16.0 }, // スペキュラ強度
+                specularColor: { value: new THREE.Vector3(1.0, 1.0, 1.0) }
             },
             vertexShader:vert,
             fragmentShader:frag
+        });
+    }
+
+    async createGrayScaleMaterial(){
+        const res_gray_frag = await fetch("./js/grayscale.frag");
+        const grayFrag = await res_gray_frag.text();
+
+        const res_gray_vert = await fetch("./js/grayscale.vert");
+        const grayVert = await res_gray_vert.text();
+
+        return new THREE.ShaderMaterial({
+            uniforms: {
+                tDiffuse: {value: null}
+            },
+            vertexShader: grayVert,
+            fragmentShader: grayFrag
+        });
+    }
+    
+    async createSobelMaterial(){
+        const res_frag = await fetch("./js/sobel.frag");
+        const frag = await res_frag.text();
+
+        const res_vert = await fetch("./js/sobel.vert");
+        const vert = await res_vert.text();
+
+        return new THREE.ShaderMaterial({
+            uniforms: {
+                tDiffuse: {value: null},
+                texelSize: { value: new THREE.Vector2(1 / window.innerWidth, 1 / window.innerHeight) }
+            },
+            vertexShader: vert,
+            fragmentShader: frag
         });
     }
 
